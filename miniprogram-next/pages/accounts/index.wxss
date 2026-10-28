@@ -1,0 +1,66 @@
+@import "../../styles/sage-glass.wxss";
+.account-page { position:relative;background:#f6f7f5;color:#242a23;font-weight:400; }
+.account-main { width:100%;max-width:760px;margin:0 auto; }
+.account-add { position:absolute;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center; }
+.account-assets { padding:14px 26px 0; }
+.asset-label { display:block;font-size:12px;line-height:18px;color:#64705c; }
+.assets-line { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+.asset-total { min-width:0;display:flex;align-items:baseline;gap:5px;font-family:"Helvetica Neue",Arial,sans-serif;font-size:38px;font-weight:300;letter-spacing:-1.2px;line-height:1.18;font-variant-numeric:tabular-nums; }
+.asset-currency { flex-shrink:0;font-size:22px;letter-spacing:-.5px; }
+.asset-amount { min-width:0;white-space:nowrap; }
+.large-summary .asset-amount { font-size:28px;white-space:normal;word-break:break-all; }
+.account-transfer { flex-shrink:0;width:44px;height:44px;border-radius:50%;background:#e9ede3;display:flex;align-items:center;justify-content:center; }
+.asset-meta { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#64705c;font-size:11px;line-height:18px; }
+.bank-tabs { width:100%;height:44px;margin-top:12px;white-space:nowrap; }
+.bank-tabs-track { display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:100%;width:max-content;padding:0 21px; }
+.bank-tabs-track.few-tabs { justify-content:center;gap:28px; }
+.bank-tab { position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:7px;min-width:44px;min-height:44px;padding:0 3px;color:#64705c;font-size:12px; }
+.bank-tab-name { min-width:0;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.bank-tab.active { color:#242a23; }
+.bank-tab.active::after { content:"";position:absolute;top:auto;left:27px;right:3px;bottom:0;width:auto;height:1px;background:#70805c;border:0;border-radius:0;transform:none; }
+.bank-brand { flex-shrink:0;overflow:hidden;mix-blend-mode:multiply; }
+.bank-brand image { display:block;max-width:none; }
+.tab-brand { width:17px;height:17px; }
+.card-brand { width:27px;height:27px; }
+.account-motion-preference { transition-duration:320ms; }
+.account-carousel { width:100%;overflow:hidden; }
+.account-slot { display:flex;align-items:center;justify-content:center;perspective:900px; }
+.bank-card { position:relative;flex-shrink:0;overflow:hidden;border-radius:13px;background:#b7b9b4;text-align:left;transform-style:preserve-3d;backface-visibility:hidden;transition-property:transform;transition-timing-function:cubic-bezier(.215,.61,.355,1);box-shadow:inset 0 0 0 .65px rgba(255,255,255,.7),0 7px 12px rgba(31,40,26,.11); }
+.card-material { position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none; }
+.card-upper { position:absolute;top:19px;left:18px;right:17px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px; }
+.vertical-bank-name { max-height:132px;max-width:42px;overflow:hidden;writing-mode:vertical-rl;text-orientation:upright;font-size:13px;line-height:18px;letter-spacing:3px;color:#293027; }
+.card-lower { position:absolute;left:17px;right:16px;bottom:18px; }
+.card-balance-label { display:block;color:#3f483b;font-size:11px;line-height:15px; }
+.card-balance { font-family:"Helvetica Neue",Arial,sans-serif;font-size:27px;line-height:36px;font-weight:300;letter-spacing:-.8px;font-variant-numeric:tabular-nums;white-space:nowrap; }
+.card-currency { font-size:14px;margin-right:3px;letter-spacing:0; }
+.long-balance .card-balance { font-size:19px;line-height:25px;letter-spacing:-.3px;white-space:normal;word-break:break-all; }
+.card-foot { display:flex;align-items:center;justify-content:space-between;gap:8px;color:#3c4538;font-size:11px;line-height:17px;margin-top:14px; }
+.material-champagne .vertical-bank-name { color:#382f25; }
+.rail-controls { display:flex;align-items:center;justify-content:center;gap:13px;min-height:44px;color:#64705c;font-size:11px;line-height:16px; }
+.rail-controls button { min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center; }
+.rail-controls button[disabled] { opacity:.25; }
+.selected-details { margin:5px 26px 0;min-height:126px; }
+.children-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px; }
+.children-title { min-width:0;word-break:break-all;font-size:13px;font-weight:400;line-height:20px; }
+.children-caption { color:#64705c;font-size:11px; }
+.add-child { flex-shrink:0;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px; }
+.child-row { display:flex;align-items:center;gap:10px;width:100%;min-height:46px;padding:8px 0;border-top:.65px solid #dce1d7;text-align:left;font-size:12px; }
+.child-name { flex:1;min-width:0;word-break:break-all; }
+.child-row-amount { max-width:65%;word-break:break-all;text-align:right;font-family:"Helvetica Neue",Arial,sans-serif;font-size:18px;font-weight:300;line-height:25px;letter-spacing:-.3px;font-variant-numeric:tabular-nums; }
+.child-row ui-icon { flex-shrink:0; }
+.account-empty { margin:24px 26px;padding:36px 12px;min-height:290px; }
+.account-pressed { opacity:.65; }
+.card-pressed { opacity:.94; }
+.child-account-label { color:#64705c;font-size:13px; }
+.account-detail-row { border-bottom:1px solid #e3e8dc;padding:12px 0; }
+.account-detail-row .between > view { min-width:0;display:flex;flex-direction:column;gap:5px; }
+.child-title { font-size:13px;color:#637057;word-break:break-all; }
+.child-amount { font-size:23px;font-weight:300;letter-spacing:-.5px;word-break:break-all; }
+.compact-account .account-assets { padding-top:8px; }
+.compact-account .bank-tabs { margin-top:6px; }
+.compact-account .card-balance { font-size:23px;line-height:30px; }
+.compact-account .card-currency { font-size:13px; }
+.compact-account .long-balance .card-balance { font-size:17px;line-height:23px; }
+@media(max-width:350px) { .account-assets { padding-left:22px;padding-right:22px; }.asset-total { font-size:36px; }.bank-tabs-track { padding:0 17px;gap:7px; }.bank-tab { font-size:11px;gap:5px; }.bank-tab-name { max-width:110px; }.selected-details { margin-left:22px;margin-right:22px; } }
+@media(min-width:600px) { .account-assets { padding-left:28px;padding-right:28px; }.selected-details { max-width:600px;margin-left:auto;margin-right:auto; }.bank-tabs-track { padding:0 28px; } }
+@media(prefers-reduced-motion:reduce) { .account-motion-preference { transition-duration:0ms; } }

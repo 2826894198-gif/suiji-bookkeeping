@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "ui-icon": "/components/icon/index",
+    "top-bar": "/components/top-bar/index",
+    "bottom-sheet": "/components/bottom-sheet/index"
+  }
+}

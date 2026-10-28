@@ -1,0 +1,1 @@
+{ "desc": "个人自用账本", "rules": [{ "action": "disallow", "page": "*" }] }

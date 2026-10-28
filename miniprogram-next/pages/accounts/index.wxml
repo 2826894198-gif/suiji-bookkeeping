@@ -1,0 +1,59 @@
+<view class="page sage-page account-page {{compactLayout ? 'compact-account' : ''}}">
+  <top-bar title="账户" />
+  <button class="account-add" style="top:{{statusHeight - 3}}px;right:{{headerActionRight}}px" bindtap="newAccount" hover-class="account-pressed" aria-label="添加账户"><ui-icon name="plus" size="{{24}}" color="#414c37" /></button>
+  <view class="account-main">
+    <view class="account-assets {{assetsText.length > 11 ? 'large-summary' : ''}}">
+      <text class="asset-label">账户总额</text>
+      <view class="assets-line"><view class="asset-total"><text class="asset-currency">¥</text><text class="asset-amount">{{assetsText}}</text></view><button class="account-transfer" bindtap="transfer" hover-class="account-pressed" aria-label="账户转账"><ui-icon name="arrow-right-left" color="#59664a" size="{{19}}" /></button></view>
+      <view class="asset-meta"><text>{{accountCount}} 个账户</text><text>子账户余额汇总</text></view>
+    </view>
+    <block wx:if="{{groups.length}}">
+      <scroll-view class="bank-tabs" scroll-x enhanced show-scrollbar="{{false}}" scroll-into-view="{{selectedTabId}}" scroll-with-animation aria-label="选择账户">
+        <view class="bank-tabs-track {{groups.length < 3 ? 'few-tabs' : ''}}">
+          <button wx:for="{{groups}}" wx:key="id" id="bank-tab-{{index}}" class="bank-tab {{index === selectedIndex ? 'active' : ''}}" data-index="{{index}}" bindtap="selectGroup" hover-class="account-pressed" aria-label="{{item.name}}{{index === selectedIndex ? '，已选中' : ''}}">
+            <view wx:if="{{item.brand}}" class="bank-brand tab-brand"><image src="/assets/accounts/{{item.brand}}{{item.brand === 'wechat' ? '-brand.svg' : '-official.png'}}" style="width:{{17 * item.brandRatio}}px;height:17px" mode="scaleToFill" aria-hidden="true" /></view><ui-icon wx:else name="{{item.icon}}" size="{{17}}" color="#64705c" /><text class="bank-tab-name">{{item.name}}</text>
+          </button>
+        </view>
+      </scroll-view>
+      <view class="account-motion-preference" bindtouchstart="startSwipe" bindtouchmove="moveSwipe" bindtouchend="endSwipe" bindtouchcancel="cancelSwipe">
+        <swiper class="account-carousel" style="height:{{cardHeight + 16}}px" current="{{swiperCurrent}}" previous-margin="{{cardMargin}}px" next-margin="{{cardMargin}}px" duration="{{motionDuration}}" easing-function="easeOutCubic" disable-touch circular="{{false}}" indicator-dots="{{false}}" bindanimationfinish="finishMotion" aria-label="左右滑动切换账户，每次切换一张">
+          <swiper-item wx:for="{{groups}}" wx:key="id" class="account-slot">
+            <button class="bank-card material-{{item.material}} {{item.amountText.length > 10 ? 'long-balance' : ''}}" style="width:{{cardWidth}}px;height:{{cardHeight}}px;transition-duration:{{motionDuration}}ms;{{cardStyles[index]}}" data-index="{{index}}" data-id="{{item.id}}" bindtap="tapCard" hover-class="card-pressed" aria-label="{{item.name}}，余额{{item.amountText}}元，查看子账户">
+              <image class="card-material" src="/assets/accounts/{{item.material}}.jpg" mode="aspectFill" aria-hidden="true" />
+              <view class="card-upper"><text class="vertical-bank-name">{{item.name}}</text><view wx:if="{{item.brand}}" class="bank-brand card-brand"><image src="/assets/accounts/{{item.brand}}{{item.brand === 'wechat' ? '-brand.svg' : '-official.png'}}" style="width:{{27 * item.brandRatio}}px;height:27px" mode="scaleToFill" aria-hidden="true" /></view><ui-icon wx:else name="{{item.icon}}" size="{{27}}" color="#3f4b34" /></view>
+              <view class="card-lower"><text class="card-balance-label">账户余额</text><view class="card-balance"><text class="card-currency">¥</text><text>{{item.amountText}}</text></view><view class="card-foot"><text>{{item.children.length}} 个子账户</text><ui-icon name="arrow-up-right" size="{{17}}" color="#4c5544" /></view></view>
+            </button>
+          </swiper-item>
+        </swiper>
+      </view>
+      <view class="rail-controls"><button wx:if="{{groups.length > 1}}" bindtap="previousGroup" disabled="{{selectedIndex === 0}}" aria-label="上一个账户"><ui-icon name="chevron-left" size="{{17}}" color="#64705c" /></button><text>{{groups.length > 1 ? '左右滑动切换账户' : '点击卡片查看账户详情'}}</text><button wx:if="{{groups.length > 1}}" bindtap="nextGroup" disabled="{{selectedIndex === groups.length - 1}}" aria-label="下一个账户"><ui-icon name="chevron-right" size="{{17}}" color="#64705c" /></button></view>
+      <view wx:if="{{selectedGroup}}" class="selected-details">
+        <view class="children-heading"><view class="children-title"><text>{{selectedGroup.name}}</text><text class="children-caption"> / 子账户</text></view><button class="add-child" bindtap="addChild" hover-class="account-pressed" aria-label="为{{selectedGroup.name}}添加子账户"><ui-icon name="plus" size="{{17}}" color="#64705c" /></button></view>
+        <button wx:for="{{selectedGroup.children}}" wx:key="id" class="child-row" data-id="{{item.id}}" bindtap="openChild" hover-class="account-pressed" aria-label="{{item.name}}，余额{{item.amountText}}元，查看详情"><text class="child-name">{{item.name}}</text><text class="child-row-amount">¥{{item.amountText}}</text><ui-icon name="chevron-right" color="#737f67" size="{{15}}" /></button>
+      </view>
+    </block>
+    <view wx:else class="account-empty empty"><ui-icon name="wallet" size="{{34}}" color="#64705c" /><text class="empty-title">添加你的第一个账户</text><text class="small">银行、微信、支付宝或现金都可以。</text><button class="primary" bindtap="newAccount">添加账户</button></view>
+    <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}}</view>
+  </view>
+</view>
+<bottom-sheet open="{{sheet === 'child'}}" title="{{selectedAccount.name || '子账户详情'}}" bindclose="closeSheet">
+  <text class="child-account-label">{{selectedAccount.groupName}}</text><view class="detail-value">¥{{selectedAccount.amountText}}</view>
+  <view class="detail-actions"><button class="primary" data-id="{{selectedAccount.id}}" bindtap="adjust">更新余额</button><button class="secondary" data-id="{{selectedAccount.id}}" bindtap="transfer">从此账户转账</button></view>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'group'}}" title="{{selectedGroup.name || '账户详情'}}" bindclose="closeSheet">
+  <view class="detail-value">¥{{selectedGroup.amountText}}</view>
+  <view wx:for="{{selectedGroup.children}}" wx:key="id" class="account-detail-row">
+    <view class="between"><view><text class="child-title">{{item.name}}</text><text class="child-amount">¥{{item.amountText}}</text></view><button class="pill" data-id="{{item.id}}" bindtap="adjust">更新余额</button></view>
+    <button class="text-link" data-id="{{item.id}}" bindtap="transfer">从此账户转账<ui-icon name="arrow-up-right" size="{{15}}" /></button>
+  </view>
+  <view class="detail-actions"><button class="primary" bindtap="addChild">添加子账户</button><button class="secondary" bindtap="renameGroup">修改名称</button></view>
+  <view class="hint">账户名称修改后，历史账目仍关联原账户。已有流水的账户不直接删除。</view>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'account'}}" title="{{accountForm.groupId ? '添加子账户' : '添加账户'}}" bindclose="closeSheet">
+  <view class="field"><text class="field-label">父账户名称</text><input aria-label="父账户名称" class="field-input" placeholder="例如：招商银行" value="{{accountForm.name}}" disabled="{{!!accountForm.groupId}}" data-field="name" bindinput="accountInput" maxlength="20" /></view>
+  <view class="field-row"><view class="field"><text class="field-label">子账户名称</text><input aria-label="子账户名称" class="field-input" placeholder="活期 / 零钱 / 理财" value="{{accountForm.childName}}" data-field="childName" bindinput="accountInput" maxlength="20" /></view><view wx:if="{{!accountForm.groupId}}" class="field"><text class="field-label">类型</text><picker aria-label="账户类型" range="{{accountKinds}}" value="{{kindIndex}}" bindchange="kindChange"><view class="field-picker">{{accountKinds[kindIndex]}}<ui-icon name="chevron-down" size="{{16}}" /></view></picker></view></view>
+  <view class="field"><text class="field-label">当前余额（元）</text><input aria-label="当前余额，元" class="field-input" type="digit" placeholder="0.00" value="{{accountForm.balance}}" data-field="balance" bindinput="accountInput" /></view>
+  <view wx:if="{{formError}}" class="form-error">{{formError}}</view><button class="primary" bindtap="saveAccount">保存账户</button>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'adjust'}}" title="更新账户余额" bindclose="closeSheet"><view class="notice">{{selectedAccount.label}}。调整记录会保留，不计入收入或预算支出。</view><view class="field"><text class="field-label">更新后的余额（元）</text><input aria-label="更新后的余额，元" class="field-input" type="digit" value="{{adjustAmount}}" bindinput="adjustInput" /></view><view wx:if="{{formError}}" class="form-error">{{formError}}</view><button class="primary" bindtap="saveAdjustment">确认更新</button></bottom-sheet>
+<bottom-sheet open="{{sheet === 'rename'}}" title="修改账户名称" bindclose="closeSheet"><view class="field"><input aria-label="账户名称" class="field-input" value="{{renameValue}}" bindinput="renameInput" maxlength="20" /></view><view wx:if="{{formError}}" class="form-error">{{formError}}</view><button class="primary" bindtap="saveRename">保存名称</button></bottom-sheet>

@@ -1,0 +1,13 @@
+:host { display:block;width:100%;min-width:0; }
+.rows { display:block;width:100%;min-width:0; }
+.rows .ledger-row { box-sizing:border-box;display:flex;align-items:center;width:100%;max-width:none;gap:14px;padding:10px 0;margin:0;background:none;border-radius:0;border:0;border-bottom:1px solid #e6e9e5;text-align:left;line-height:1.4;min-height:62px;font-weight:400; }
+.ledger-row::after { border:0; }.ledger-row:last-child { border-bottom:0; }
+.icon { display:flex;align-items:center;justify-content:center;flex-shrink:0;width:42px;height:42px;border-radius:50%;background:rgba(229,233,227,.65); }
+.copy { display:flex;flex:1;flex-direction:column;gap:3px;min-width:0; }
+.name { font-size:15px;color:#121711;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.subtitle { font-size:11px;color:#858a82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.amount { font-family:"Helvetica Neue",Arial,sans-serif;font-size:18px;font-weight:400;letter-spacing:-.4px;font-variant-numeric:tabular-nums;flex-shrink:0;white-space:nowrap;text-align:right; }
+.amount.income { color:#6e813c; }
+.compact .ledger-row { padding:10px 0; }
+.compact .amount { font-size:17px; }
+@media(max-width:350px) { .ledger-row { gap:9px; }.amount { font-size:17px; }.name { font-size:16px; }.icon { width:36px;height:36px; } }

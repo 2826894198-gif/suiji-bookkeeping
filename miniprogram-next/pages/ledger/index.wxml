@@ -1,0 +1,22 @@
+<import src="../../templates/detail.wxml" />
+<view class="page sage-page"><top-bar title="账目" /><view class="content">
+  <view class="ledger-summary sg-panel">
+    <image class="sg-texture" src="/assets/sage-frost.jpg" mode="aspectFill" aria-hidden="true" />
+    <view class="summary-head"><view class="summary-heading"><text>{{isCurrentPeriod ? '本期支出' : '周期支出'}}</text><button class="summary-stat" data-page="stats" bindtap="go" aria-label="查看统计"><ui-icon name="chart-no-axes-combined" color="#626d52" size="{{18}}" /></button></view><button class="pill period-neutral" bindtap="changePeriod">{{period.label}}<ui-icon name="chevron-down" color="#687064" size="{{14}}" /></button></view>
+    <view class="summary-main sg-figure {{spentText.length > 10 ? 'long-figure' : ''}}"><text class="currency">¥</text><text>{{spentText}}</text></view>
+    <view class="summary-footer sg-inset"><view class="summary-cell"><text class="label">{{isCurrentPeriod ? '本期收入' : '周期收入'}}</text><text class="value">¥{{incomeText}}</text></view><view class="summary-cell"><text class="label">{{isCurrentPeriod ? '本期支出' : '周期支出'}}</text><text class="value">¥{{spentText}}</text></view><view class="summary-cell"><text class="label">{{isCurrentPeriod ? '本期结余' : '周期结余'}}</text><text class="value">¥{{balanceText}}</text></view></view>
+  </view>
+  <view class="search-box"><ui-icon name="search" size="{{19}}" color="#858c7e" /><input placeholder="搜索分类、备注或金额" value="{{query}}" bindinput="search" confirm-type="search" aria-label="搜索账目" /></view>
+  <view class="between filter-row"><view class="type-tabs"><button class="{{type === 'all' ? 'chosen' : ''}}" data-type="all" bindtap="setType">全部</button><button class="{{type === 'expense' ? 'chosen' : ''}}" data-type="expense" bindtap="setType">支出</button><button class="{{type === 'income' ? 'chosen' : ''}}" data-type="income" bindtap="setType">收入</button></view><button class="pill" bindtap="chooseCategory">{{categoryName}}<ui-icon name="chevron-down" size="{{13}}" /></button></view>
+  <button wx:if="{{dateFilter}}" class="date-filter" bindtap="clearDateFilter" aria-label="清除日期筛选，查看整个周期"><ui-icon name="calendar-days" size="{{16}}" /><text>{{dateFilter}}</text><text class="date-filter-clear">清除日期</text><ui-icon name="x" size="{{14}}" /></button>
+  <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}}</view>
+  <view wx:for="{{groups}}" wx:key="date" class="ledger-group sg-surface">
+    <view class="group-head"><text>{{item.label}}<text wx:if="{{hasFilters}}" class="filtered-label"> · 筛选结果</text></text><text class="muted">{{item.rows.length}} 笔</text></view>
+    <view class="day-totals"><view><text>{{item.hasRefund ? '净支出' : '支出'}}</text><text class="day-money">¥{{item.spentText}}</text></view><view><text>收入</text><text class="day-money day-income">¥{{item.incomeText}}</text></view></view>
+    <view wx:if="{{item.hasRefund}}" class="refund-caption">已抵减 ¥{{item.refundText}} 回款，不计入收入</view>
+    <ledger-rows rows="{{item.rows}}" compact bindopen="openEntry" />
+  </view>
+  <view wx:if="{{!count}}" class="empty surface"><ui-icon name="notebook-pen" size="{{32}}" /><text class="empty-title">这里还没有账目</text><text class="small">试试其他筛选，或记下新的一笔。</text><button class="primary" data-page="entry" bindtap="go">记一笔</button></view>
+  <view wx:if="{{count}}" class="list-end">{{dateFilter ? '当日' : '所选周期'}}共 {{count}} 笔 · 已全部显示</view>
+</view></view>
+<template is="entry-detail" data="{{sheet,detail,formError,refundAmount,refundDate,today}}" />

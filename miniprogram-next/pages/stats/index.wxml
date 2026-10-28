@@ -1,0 +1,12 @@
+<view class="page"><top-bar title="消费统计" back /><view class="content">
+  <view class="period-heading"><text class="title">把钱花在喜欢的事上。</text><button class="pill" bindtap="changePeriod">{{period.label}}<ui-icon name="chevron-down" size="{{14}}" /></button></view>
+  <view class="stats-hero texture texture-olive"><image class="texture-image" src="/assets/olive-card.jpg" mode="aspectFill" aria-hidden="true" /><view><text class="hero-label">{{isCurrentPeriod ? '本期净支出' : '所选周期净支出'}}</text><text class="stats-amount">¥{{spentText}}</text></view><view class="stats-average"><text>日均</text><text>¥{{average}}</text><text>{{days ? (isCurrentPeriod ? '本期已过' : '周期共') + ' ' + days + ' 天' : '周期尚未开始'}}</text></view></view>
+  <view class="desktop-grid">
+    <view class="surface composition-card"><view class="section-head"><text class="section-title">钱花在哪里</text><text class="muted small">支出构成</text></view><view class="donut"><ec-canvas id="composition" canvas-id="composition" ec="{{ec}}" /></view>
+      <view wx:if="{{!rows.length}}" class="hint">还没有支出，记录后会显示分类占比。</view>
+      <view wx:for="{{rows}}" wx:key="id" class="stat-category"><view class="row"><ui-icon name="{{item.icon}}" size="{{18}}" /><text>{{item.name}}</text></view><text class="muted">{{item.proportion}}%</text><text class="stat-money">¥{{item.amountText}}</text></view>
+    </view>
+    <view class="surface trend-card"><view class="section-head"><text class="section-title">每日支出</text><text class="muted small">{{isCurrentPeriod ? '本期' : '所选周期'}}</text></view><view class="chart-box"><ec-canvas id="trend" canvas-id="trend" ec="{{ec}}" /></view><view class="notice">转账和余额调整不计入支出；已关联回款抵减原支出。单日回款多于支出时显示负值。</view></view>
+  </view>
+  <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}}</view>
+</view></view>

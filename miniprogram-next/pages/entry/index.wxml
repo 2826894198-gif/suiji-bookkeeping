@@ -1,0 +1,29 @@
+<view class="page sage-page"><top-bar title="{{editId ? '编辑账目' : '记一笔'}}" /><view class="content">
+  <view class="entry-type segments"><button data-type="expense" bindtap="setType" class="segment {{type === 'expense' ? 'active' : ''}}">支出</button><button data-type="income" bindtap="setType" class="segment {{type === 'income' ? 'active' : ''}}">收入</button><button data-type="transfer" bindtap="setType" class="segment {{type === 'transfer' ? 'active' : ''}}">转账</button></view>
+  <view class="amount-panel sg-panel"><image class="sg-texture" src="/assets/sage-frost.jpg" mode="aspectFill" aria-hidden="true" />
+    <view class="between"><text class="amount-label">{{type === 'expense' ? '这次花了多少' : type === 'income' ? '记录一份收入' : '账户间划转'}}</text><ui-icon name="{{type === 'transfer' ? 'arrow-right-left' : 'pencil'}}" color="#576348" size="{{22}}" /></view>
+    <view class="amount-field {{amount.length > 8 ? 'long-amount' : ''}}"><text>¥</text><input type="digit" placeholder="0.00" placeholder-class="amount-placeholder" maxlength="11" value="{{amount}}" bindinput="inputAmount" aria-label="金额，元" cursor-spacing="30" /></view>
+    <view class="amount-help"><ui-icon name="check" size="{{13}}" color="#576348" /><text>{{type === 'transfer' ? '仅记录账簿内划转，不计入收支' : categoryName ? categoryName + (subcategory ? ' / ' + subcategory : '') : '选择分类与账户，记下这一笔'}}</text></view>
+  </view>
+  <view wx:if="{{!hasAccounts}}" class="notice" data-page="accounts" bindtap="go"><ui-icon name="wallet" size="{{20}}" /><text>先添加一个账户，就可以开始记账。</text><ui-icon name="chevron-right" size="{{17}}" /></view>
+  <view wx:if="{{type !== 'transfer'}}" class="category-panel sg-surface">
+    <view class="between"><text class="form-title">选择分类</text><button class="text-link" data-page="categories" bindtap="go">管理<ui-icon name="chevron-right" size="{{15}}" /></button></view>
+    <view class="category-grid"><button wx:for="{{categories}}" wx:key="id" class="category-choice {{categoryId === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="chooseCategory" aria-selected="{{categoryId === item.id}}">
+      <view class="category-icon"><ui-icon name="{{item.icon}}" size="{{24}}" color="{{categoryId === item.id ? '#ffffff' : '#454e3a'}}" /></view><text>{{item.name}}</text>
+    </button></view>
+    <view class="subcategories"><button wx:for="{{children}}" wx:key="*this" data-name="{{item}}" bindtap="chooseChild" class="pill {{subcategory === item ? 'pill-ink' : ''}}">{{item}}</button></view>
+    <view wx:if="{{legacySubcategory}}" class="legacy-child">原子分类“{{subcategory}}”已移出选项，历史名称继续保留；重新选择后才会改变。</view>
+  </view>
+  <view class="entry-fields sg-surface">
+    <view class="field"><text class="field-label">{{type === 'income' ? '收款账户' : type === 'transfer' ? '转出账户' : '付款账户'}}</text><picker aria-label="选择账户" range="{{accounts}}" range-key="label" value="{{accountIndex}}" bindchange="accountChange" disabled="{{!hasAccounts}}"><view class="field-picker"><view class="row"><ui-icon name="wallet" size="{{20}}" /><text>{{hasAccounts ? accounts[accountIndex].label : '请先添加账户'}}</text></view><ui-icon name="chevron-down" size="{{16}}" /></view></picker></view>
+    <view wx:if="{{type === 'transfer'}}" class="field"><text class="field-label">转入账户</text><picker aria-label="选择账户" range="{{accounts}}" range-key="label" value="{{toIndex}}" bindchange="toChange"><view class="field-picker">{{accounts[toIndex].label || '请选择转入账户'}}<ui-icon name="chevron-down" size="{{16}}" /></view></picker></view>
+    <view class="entry-moment"><text class="field-label">发生时间</text><view class="moment-pickers"><picker aria-label="发生日期" mode="date" end="{{today}}" value="{{date}}" bindchange="dateChange"><view class="moment-value">{{date}}<ui-icon name="calendar-days" size="{{15}}" /></view></picker><picker aria-label="发生时间" mode="time" value="{{time}}" bindchange="timeChange"><view class="moment-value">{{time}}<ui-icon name="chevron-down" size="{{13}}" /></view></picker></view></view>
+    <button class="note-toggle" bindtap="toggleNote"><ui-icon name="pencil" size="{{17}}" /><text>{{showNote ? '备注' : '添加备注'}}</text><ui-icon name="chevron-down" size="{{15}}" /></button>
+    <textarea aria-label="账目备注" wx:if="{{showNote}}" class="field-textarea" value="{{note}}" maxlength="160" placeholder="给这一笔留一点记忆…" bindinput="noteInput" />
+  </view>
+  <view wx:if="{{formError || error}}" class="form-error">{{formError || error}}</view>
+  <button class="primary save-entry" bindtap="save" disabled="{{busy || !hasAccounts}}" loading="{{busy}}"><ui-icon name="check" color="#ffffff" size="{{20}}" />{{editId ? '保存修改' : '保存这笔账'}}</button>
+  <button wx:if="{{editId}}" class="text-link" style="justify-content:center;width:100%" bindtap="cancelEdit">取消编辑</button>
+  <view class="input-methods"><button data-name="语音录入" bindtap="futureInput">语音录入<text>待接入</text></button><button data-name="图片识别" bindtap="futureInput">图片识别<text>待接入</text></button><button data-name="账单导入" bindtap="futureInput">账单导入<text>待接入</text></button></view>
+</view></view>
+<bottom-sheet open="{{sheet === 'input-info'}}" title="{{inputName || '录入方式'}}" bindclose="closeSheet"><view class="notice">{{inputName}}的识别服务尚未接入。接入后会先展示识别结果，供你核对和修改，再保存到账本。</view><view class="hint">当前可使用手动记账。此入口不会上传照片、录音或财务数据。</view><button class="primary" bindtap="closeSheet">继续手动记账</button></bottom-sheet>

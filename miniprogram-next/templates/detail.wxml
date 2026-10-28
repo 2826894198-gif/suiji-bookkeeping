@@ -1,0 +1,21 @@
+<template name="entry-detail">
+  <bottom-sheet open="{{sheet === 'detail'}}" title="{{detail.name || '账目详情'}}" bindclose="closeSheet">
+    <view class="detail-value">{{detail.amountText}}</view>
+    <view class="detail-row"><text>分类</text><text>{{detail.subcategory || detail.name}}</text></view>
+    <view class="detail-row"><text>账户</text><text>{{detail.accountLabel}}</text></view>
+    <view class="detail-row"><text>发生时间</text><text>{{detail.dateText}}</text></view>
+    <view wx:if="{{detail.note}}" class="detail-row"><text>备注</text><text>{{detail.note}}</text></view>
+    <view class="detail-actions">
+      <button wx:if="{{detail.type === 'expense' || detail.type === 'income' || detail.type === 'transfer'}}" class="primary" bindtap="editEntry">编辑账目</button>
+      <button class="secondary danger" bindtap="deleteEntry">删除</button>
+    </view>
+    <button wx:if="{{detail.type === 'expense'}}" class="text-link" style="width:100%;justify-content:center;margin-top:8px" bindtap="showRefund">记录退款 / AA 回款</button>
+  </bottom-sheet>
+  <bottom-sheet open="{{sheet === 'refund'}}" title="记录回款" bindclose="closeSheet">
+    <view class="notice">回款会返回原付款账户，并抵减原支出。本次支持同预算周期回款。</view>
+    <view class="field"><text class="field-label">回款金额</text><input aria-label="回款金额，元" class="field-input" type="digit" placeholder="0.00" value="{{refundAmount}}" bindinput="refundInput" /></view>
+    <view class="field"><text class="field-label">回款日期</text><picker aria-label="回款日期" mode="date" start="{{detail.date}}" end="{{today}}" value="{{refundDate}}" bindchange="refundDateChange"><view class="field-picker">{{refundDate}}<ui-icon name="calendar-days" size="{{18}}" /></view></picker></view>
+    <view wx:if="{{formError}}" class="form-error">{{formError}}</view>
+    <button class="primary" bindtap="saveRefund">确认回款</button>
+  </bottom-sheet>
+</template>

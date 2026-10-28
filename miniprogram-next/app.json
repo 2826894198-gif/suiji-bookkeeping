@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/dashboard/index",
+    "pages/ledger/index",
+    "pages/entry/index",
+    "pages/budget/index",
+    "pages/accounts/index",
+    "pages/stats/index",
+    "pages/settings/index",
+    "pages/categories/index"
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f6f5",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#747579",
+    "selectedColor": "#151615",
+    "list": [
+      { "pagePath": "pages/dashboard/index", "text": "总览" },
+      { "pagePath": "pages/ledger/index", "text": "账目" },
+      { "pagePath": "pages/entry/index", "text": "记一笔" },
+      { "pagePath": "pages/budget/index", "text": "预算" },
+      { "pagePath": "pages/accounts/index", "text": "账户" }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

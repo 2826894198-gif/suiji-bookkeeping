@@ -1,0 +1,7 @@
+<view class="rows {{compact ? 'compact' : ''}}">
+  <button wx:for="{{rows}}" wx:key="id" class="ledger-row" data-id="{{item.id}}" bindtap="open" aria-label="{{item.name}}，{{item.amountText}}，查看详情">
+    <view class="icon"><ui-icon name="{{item.icon}}" size="{{24}}" /></view>
+    <view class="copy"><text class="name">{{item.name}}</text><text class="subtitle">{{item.subtitle}}</text></view>
+    <text class="amount {{item.isIncome ? 'income' : ''}}">{{item.amountText}}</text>
+  </button>
+</view>

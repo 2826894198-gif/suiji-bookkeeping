@@ -1,0 +1,8 @@
+.period-heading { flex-wrap:wrap;gap:12px; }.period-heading .title { font-size:23px; }
+.stats-hero { min-height:144px;border-radius:25px;padding:23px;display:flex;justify-content:space-between;gap:12px;background-position:center 15%;margin-bottom:18px; }
+.stats-hero > view { display:flex;flex-direction:column;gap:10px; }.stats-amount { font-size:34px;font-weight:350;letter-spacing:-1.2px;white-space:nowrap; }
+.stats-average { text-align:right;font-size:11px;justify-content:center; }.stats-average text:nth-child(2) { font-size:23px;letter-spacing:-.5px; }
+.composition-card,.trend-card { margin-bottom:16px;padding:9px 17px 18px; }.composition-card .section-head,.trend-card .section-head { margin:0; }
+.donut { height:206px;margin:5px 0 12px; }.stat-category { display:flex;align-items:center;gap:10px;min-height:42px;border-top:1px solid #edf0e8;font-size:12px; }.stat-category .row { flex:1; }.stat-category > .muted { width:45px;text-align:right;font-size:11px; }.stat-money { min-width:80px;text-align:right;font-size:14px; }
+.trend-card .chart-box { height:180px;margin-top:8px; }.trend-card .notice { margin-bottom:0;font-size:11px; }
+@media(max-width:350px) { .stats-amount { font-size:29px; }.stats-hero { padding:20px; } }

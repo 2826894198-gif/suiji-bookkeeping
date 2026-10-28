@@ -1,0 +1,50 @@
+<import src="../../templates/detail.wxml" />
+<view class="page">
+  <top-bar />
+  <view class="content">
+    <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}} 点击重试</view>
+    <view class="expense-summary">
+      <view class="between"><text class="expense-label">{{isCurrentPeriod ? '本期支出' : '所选周期支出'}}</text><button class="pill period-pill" bindtap="changePeriod">{{period.label}}<ui-icon name="chevron-right" size="{{16}}" /></button></view>
+      <view class="expense-value"><text class="currency">¥</text>{{spentText}}</view>
+      <view class="progress-wrap">
+        <view class="progress-track"><view class="progress-value" style="width:{{progress}}%"></view></view>
+        <ui-icon class="progress-marker" name="chevron-down" size="{{14}}" style="left:calc({{progress}}% - 7px)" />
+      </view>
+      <view class="progress-caption"><text>{{hasBudget ? (isCurrentPeriod ? '本期预算' : '周期预算') + '　¥' + totalText : '尚未设置预算'}}</text><text>{{hasBudget ? '已用 ' + usedText + '%' : '设置后查看进度'}}</text></view>
+    </view>
+    <view wx:if="{{isEmpty}}" class="notice" data-page="accounts" bindtap="go"><ui-icon name="wallet" size="{{20}}" /><text>从第一个账户开始，填写余额后就可以记账。</text><ui-icon name="chevron-right" size="{{16}}" /></view>
+    <view class="home-grid">
+      <view class="finance-pair">
+        <button class="finance-card texture texture-olive" data-page="budget" bindtap="go" aria-label="剩余预算，查看预算"><image class="texture-image" src="/assets/olive-card.jpg" mode="aspectFill" aria-hidden="true" />
+          <view class="finance-top"><view class="icon-ring"><ui-icon name="wallet" color="#ffffff" size="{{19}}" /></view><text>剩余预算</text><view class="dark-circle"><ui-icon name="arrow-up-right" color="#ffffff" size="{{21}}" /></view></view>
+          <view class="card-amount"><text wx:if="{{hasBudget}}">¥</text>{{hasBudget ? remainingText : '待设置'}}</view>
+          <view class="card-footer"><text>{{hasBudget ? '预算剩余' : '设置预算'}}</text><text>{{hasBudget ? leftText + '%' : '→'}}</text></view>
+        </button>
+        <button class="finance-card texture texture-rose" data-page="accounts" bindtap="go" aria-label="账户总额，查看账户"><image class="texture-image" src="/assets/rose-card.jpg" mode="aspectFill" aria-hidden="true" />
+          <view class="finance-top"><view class="icon-ring"><ui-icon name="credit-card" color="#ffffff" size="{{19}}" /></view><text>账户总额</text><view class="dark-circle"><ui-icon name="arrow-up-right" color="#ffffff" size="{{21}}" /></view></view>
+          <view class="card-amount"><text>¥</text>{{assetsText}}</view>
+          <view class="card-footer"><text>{{accountCount}} 个账户</text></view>
+        </button>
+      </view>
+      <view class="daily-panel surface">
+        <view class="between"><view class="row"><view class="icon-ring"><ui-icon name="trending-up" size="{{22}}" /></view><text class="chart-title">每日支出</text></view><button class="pill pill-filter" bindtap="toggleRange">{{range === '近 7 日' ? range : isCurrentPeriod ? '本期' : '整期'}}<ui-icon name="chevron-down" size="{{15}}" /></button></view>
+        <view wx:if="{{hasChartDays}}" class="daily-selection">
+          <button class="daily-date" bindtap="chooseDay" aria-label="选择日期查看当日支出"><ui-icon name="calendar-days" size="{{16}}" /><text>{{dayLabel}}</text><ui-icon name="chevron-down" size="{{13}}" /></button>
+          <view class="daily-amount"><text class="daily-amount-label">{{dayRefund ? '净支出' : '当日支出'}}</text><text class="money">¥{{dayAmount}}</text></view>
+        </view>
+        <view class="chart-box"><ec-canvas id="daily-chart" canvas-id="daily-chart" ec="{{ec}}" hide-canvas="{{!!sheet}}" /></view>
+        <view class="daily-caption"><text>{{hasChartDays ? '点选曲线或日期，查看当天明细' : '这个预算周期尚未开始'}}</text><text wx:if="{{dayRefund}}">已抵减 ¥{{dayRefund}} 回款</text></view>
+      </view>
+    </view>
+    <view class="section-head today-head"><text class="section-title">{{dayLabel}}支出明细<text wx:if="{{dayCount}}" class="day-count">{{dayCount}} 笔</text></text><button wx:if="{{dayCount}}" class="text-link" bindtap="viewDayEntries">查看全部<ui-icon name="chevron-right" size="{{17}}" /></button></view>
+    <ledger-rows rows="{{todayRows}}" bindopen="openEntry" />
+    <view wx:if="{{!todayRows.length}}" class="empty"><text>{{hasChartDays ? dayLabel + '没有支出记录' : '这个周期还没有账目'}}</text><button class="secondary" style="padding:0 18px" data-page="entry" bindtap="go">记一笔</button></view>
+  </view>
+</view>
+<template is="entry-detail" data="{{sheet,detail,formError,refundAmount,refundDate,today}}" />
+<bottom-sheet open="{{sheet === 'day-picker'}}" title="选择日期" bindclose="closeSheet">
+  <view class="calendar-range">{{chartStart}} 至 {{chartEnd}}</view>
+  <view class="calendar-grid calendar-weekdays"><text wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">{{item}}</text></view>
+  <view class="calendar-grid"><block wx:for="{{calendarDays}}" wx:key="key"><view wx:if="{{item.empty}}"></view><button wx:else class="calendar-day {{selectedDate === item.date ? 'selected' : ''}}" data-date="{{item.date}}" bindtap="pickDay" aria-label="{{item.date}}，净支出{{item.amountText}}元" aria-selected="{{selectedDate === item.date}}"><text>{{item.label}}</text><view class="calendar-dot {{item.hasExpense ? 'has-expense' : ''}}"></view></button></block></view>
+  <view class="calendar-note">圆点表示当天有支出或回款，点选后查看明细。</view>
+</bottom-sheet>

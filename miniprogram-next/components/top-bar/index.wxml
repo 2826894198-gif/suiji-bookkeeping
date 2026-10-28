@@ -1,0 +1,6 @@
+<view class="top" style="padding-top:{{statusHeight}}px">
+  <view class="bar">
+    <button wx:if="{{back}}" class="back" bindtap="onBack" aria-label="返回"><ui-icon name="chevron-left" size="{{24}}" /></button>
+    <button class="title" bindtap="openSettings" aria-label="{{back ? title : title + '，打开设置'}}">{{title}}</button>
+  </view>
+</view>

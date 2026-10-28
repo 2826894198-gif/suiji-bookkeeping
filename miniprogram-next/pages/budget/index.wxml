@@ -1,0 +1,29 @@
+<view class="page sage-page"><top-bar title="预算" /><view class="content">
+  <view class="budget-period"><text>{{isCurrentPeriod ? '本期预算' : '所选周期预算'}}</text><button class="pill" bindtap="changePeriod">{{period.label}}<ui-icon name="calendar-days" size="{{14}}" /></button></view>
+  <view class="budget-panel sg-panel {{remainingText.length > 9 ? 'wide-budget' : ''}}">
+    <image class="sg-texture" src="/assets/sage-frost.jpg" mode="aspectFill" aria-hidden="true" />
+    <view class="between"><text class="budget-label">{{isCurrentPeriod ? '本期剩余预算' : '所选周期剩余'}}</text><button class="tap-icon" bindtap="editBudget" aria-label="修改总预算"><ui-icon name="pencil" color="#576348" size="{{18}}" /></button></view>
+    <view class="budget-main"><view class="budget-amount sg-figure {{hasBudget && period.remaining < 0 ? 'over-budget' : ''}}"><text wx:if="{{hasBudget}}" class="currency">¥</text>{{hasBudget ? remainingText : '待设置'}}</view><view class="budget-ring"><image src="{{ringSrc}}" mode="aspectFit" aria-hidden="true" /><view class="ring-label"><text class="ring-percent">{{hasBudget ? usedText + '%' : '待设置'}}</text><text>{{hasBudget ? '已用' : '总预算'}}</text></view></view></view>
+    <view class="budget-footer sg-inset"><text>已花 <text class="footer-value">¥{{spentText}}</text></text><text>{{hasBudget ? '总预算 ¥' + totalText : '尚未设置额度'}}</text></view>
+  </view>
+  <view class="cycle-strip"><view class="icon-circle"><ui-icon name="calendar-days" size="{{21}}" /></view><view><text class="cycle-title">跟随你的发薪日</text><text class="muted small">每月 {{cycleDay}} 日开始新一期</text></view><button class="tap-icon" bindtap="editBudget" aria-label="设置预算周期"><ui-icon name="chevron-right" size="{{20}}" /></button></view>
+  <view class="section-head"><text class="section-title">分类预算</text><button class="text-link" bindtap="editBudget">管理额度<ui-icon name="arrow-up-right" size="{{16}}" /></button></view>
+  <view class="budget-categories">
+    <view wx:for="{{categoryRows}}" wx:key="id" class="category-budget surface {{item.over ? 'surface-rose' : ''}}">
+      <view class="between"><view class="row"><view class="icon-circle"><ui-icon name="{{item.icon}}" size="{{21}}" /></view><text>{{item.name}}</text></view><text class="budget-used">¥{{item.usedText}}<text> / {{item.limitText}}</text></text></view>
+      <view class="progress-track category-track"><view class="progress-value {{item.over ? 'over' : ''}}" style="width:{{item.percent}}%"></view></view>
+      <view class="between category-caption"><text>{{item.budgeted ? (item.over ? '已超出 ¥' : '还可花 ¥') + item.leftText : '未设置额度'}}</text><text>{{item.budgeted ? '已用 ' + item.useText + '%' : '单独设置预算'}}</text></view>
+    </view>
+  </view>
+  <view wx:if="{{!categoryRows.length}}" class="empty surface surface-olive"><text class="empty-title">给生活安排一点余量</text><text class="small">设置总预算，再为常用分类分配额度。</text><button class="primary" bindtap="editBudget">设置预算</button></view>
+  <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}}</view>
+</view></view>
+<bottom-sheet open="{{sheet === 'budget'}}" title="安排预算" bindclose="closeSheet">
+  <view class="notice">{{period.fullLabel}}</view>
+  <view class="field"><text class="field-label">总预算（元）</text><input aria-label="总预算，元" class="field-input total-input" type="digit" value="{{draftTotal}}" bindinput="totalInput" /></view>
+  <view class="field"><text class="field-label">预算起始日</text><picker aria-label="预算起始日" range="{{dayOptions}}" value="{{cycleIndex}}" bindchange="dayChange" disabled="{{cycleLocked}}"><view class="field-picker">{{dayOptions[cycleIndex]}}<ui-icon name="{{cycleLocked ? 'shield-check' : 'chevron-down'}}" size="{{17}}" /></view></picker></view>
+  <view class="hint">分类额度合计不超过总预算。{{cycleLocked ? '已有账目或预算，暂保留现有起始日，避免改变历史统计。' : '第一次设置时可选择起始日。'}}新周期需要单独设置预算，不自动结转。</view>
+  <view class="limit-grid"><view wx:for="{{limits}}" wx:key="id" class="field"><text class="field-label">{{item.name}}</text><input aria-label="{{item.name}}分类预算，元" class="field-input" type="digit" value="{{item.value}}" data-index="{{index}}" bindinput="limitInput" /></view></view>
+  <view wx:if="{{formError}}" class="form-error">{{formError}}</view>
+  <button class="primary" disabled="{{busy}}" loading="{{busy}}" bindtap="save">保存预算</button>
+</bottom-sheet>

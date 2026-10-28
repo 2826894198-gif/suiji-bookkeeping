@@ -1,0 +1,62 @@
+<view class="page"><top-bar title="账本设置" back /><view class="content">
+  <view class="settings-profile texture texture-rose"><image class="texture-image" src="/assets/rose-card.jpg" mode="aspectFill" aria-hidden="true" />
+    <view class="profile-icon"><ui-icon name="notebook-pen" color="#ffffff" size="{{29}}" /></view>
+    <view class="profile-copy"><text>{{appName}}</text><text>{{storageMode}} · 只为自己记</text></view>
+    <view class="profile-count"><text>{{entryCount}}</text><text>笔记录</text></view>
+  </view>
+  <view class="section-head"><text class="section-title">你的使用方式</text></view>
+  <view class="settings-group olive-group">
+    <button class="setting-row" data-page="categories" bindtap="go"><view class="setting-icon"><ui-icon name="layout-grid" size="{{22}}" /></view><view class="setting-copy"><text>分类管理</text><text>主分类与子分类，自由整理</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" data-page="budget" bindtap="go"><view class="setting-icon"><ui-icon name="calendar-days" size="{{22}}" /></view><view class="setting-copy"><text>预算周期</text><text>跟随发薪日安排每一期</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" bindtap="appearance"><view class="setting-icon"><ui-icon name="sparkles" size="{{22}}" /></view><view class="setting-copy"><text>外观</text><text>珍珠玻璃 · 当前设计</text></view><view class="theme-dot" aria-hidden="true"><image src="/assets/olive-card.jpg" mode="aspectFill" /><image src="/assets/rose-card.jpg" mode="aspectFill" /></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+  </view>
+  <view class="section-head"><text class="section-title">数据，安心留存</text><view class="local-status"><ui-icon name="shield-check" size="{{14}}" />本地保存</view></view>
+  <view class="settings-group rose-group">
+    <button class="setting-row" disabled="{{busy}}" bindtap="exportBackup"><view class="setting-icon"><ui-icon name="download" size="{{22}}" /></view><view class="setting-copy"><text>导出备份</text><text>先校验文件，再选择导出</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" disabled="{{busy}}" bindtap="importBackup"><view class="setting-icon"><ui-icon name="upload" size="{{22}}" /></view><view class="setting-copy"><text>从备份恢复</text><text>支持当前及旧版 JSON 备份</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" bindtap="openRecoveries"><view class="setting-icon"><ui-icon name="shield-check" size="{{22}}" /></view><view class="setting-copy"><text>本机恢复点</text><text>{{recoveryCount ? recoveryCount + ' 份备份，可选择找回' : '首次修改时自动留存'}}</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" bindtap="cloudInfo"><view class="setting-icon"><ui-icon name="shield-check" size="{{22}}" /></view><view class="setting-copy"><text>云端账本</text><text>{{cloudTitle}}</text></view><text class="status-tag {{cloudPhase === 'synced' ? 'status-ok' : ''}}">{{cloudPhase === 'synced' ? '已核验' : cloudEnabled ? '查看状态' : '未启用'}}</text><ui-icon name="chevron-right" size="{{18}}" /></button>
+    <button class="setting-row" bindtap="openCloudHistory"><view class="setting-icon"><ui-icon name="file-text" size="{{22}}" /></view><view class="setting-copy"><text>云端历史备份</text><text>保留 30 个版本，恢复前核对</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+  </view>
+  <view wx:if="{{backupError}}" class="form-error">{{backupError}}</view>
+  <view wx:if="{{storageNotice}}" class="form-error">{{storageNotice}}</view>
+  <view wx:if="{{isDemo}}" class="demo-card"><view class="row"><ui-icon name="notebook-pen" size="{{23}}" /><view><text class="demo-title">先熟悉，再开始。</text><text class="hint">当前所有金额均为演示数据。</text></view></view><button class="primary" bindtap="startPersonal">建立我的个人账本</button></view>
+  <view class="settings-foot"><text>{{appName}} · v{{releaseVersion}}{{releaseEnvironment ? ' · ' + releaseEnvironment : ''}}</text><button class="privacy-link" bindtap="privacy">隐私保护指引</button><text>最近保存 {{updatedText}}</text></view>
+  <view wx:if="{{error}}" class="form-error" bindtap="retry">{{error}}</view>
+</view></view>
+<bottom-sheet open="{{sheet === 'backup'}}" title="备份已生成并校验" bindclose="closeSheet"><view class="notice">已保存 {{entryCount}} 笔账目与 {{accountTotal}} 个账户，可从“本机恢复点”找回。</view><view class="hint">{{backupTime}} · 文件仍在本机。请导出到其他位置，避免清理微信数据后丢失。</view><button class="primary" bindtap="shareBackup">导出 JSON 文件</button></bottom-sheet>
+<bottom-sheet open="{{sheet === 'recoveries'}}" title="本机恢复点" bindclose="closeSheet"><view class="hint">自动恢复点保留最近 7 份；手动、恢复前和升级前备份单独保留。这里展示最近 20 份。本机文件也可能随微信数据清理而丢失，请另行导出。</view><block wx:if="{{recoveryCount > 0}}"><button wx:for="{{recoveryRows}}" wx:key="name" class="recovery-row" data-name="{{item.name}}" bindtap="chooseRecovery"><view><text>{{item.label}}</text><text>{{item.timeText}}</text></view><ui-icon name="chevron-right" size="{{18}}" /></button></block><view wx:else class="notice">还没有恢复点。可先导出一份备份。</view><view wx:if="{{formError}}" class="form-error">{{formError}}</view></bottom-sheet>
+<bottom-sheet open="{{sheet === 'restore'}}" title="核对备份内容" bindclose="closeSheet"><view class="surface surface-olive restore-card"><text class="restore-kind">{{restoreKind}}</text><text class="restore-summary">{{restoreSummary}}</text><view><text>账户总额</text><text class="restore-amount">¥{{restoreBalance}}</text></view></view><view class="hint">来源：{{restoreSource}}</view><view class="notice">将替换当前账本。替换前先保留当前账本的恢复点，保存后再次核验；备份失败时停止替换。</view><view wx:if="{{formError}}" class="form-error">{{formError}}</view><button class="primary" disabled="{{busy}}" loading="{{busy}}" bindtap="confirmRestore">确认替换并恢复</button></bottom-sheet>
+<bottom-sheet open="{{sheet === 'cloud'}}" title="云端账本" content-key="{{cloudPhase + ':' + cloudMessage + ':' + cloudError}}" bindclose="closeSheet">
+  <view class="cloud-state {{cloudPhase === 'synced' ? 'cloud-state-ok' : ''}}">
+    <view class="cloud-state-icon"><ui-icon name="shield-check" size="{{27}}" /></view>
+    <view class="cloud-state-copy"><text class="cloud-title">{{cloudTitle}}</text><text class="cloud-message">{{cloudMessage}}</text><text wx:if="{{cloudLastSync}}" class="cloud-time">最近核对 {{cloudLastSync}}</text></view>
+  </view>
+  <view wx:if="{{cloudPhase === 'conflict'}}" class="cloud-compare">
+    <view class="cloud-choice olive-group"><text class="cloud-choice-label">本机账本</text><text class="cloud-choice-meta">{{cloudLocal.entries}} 笔账目 · {{cloudLocal.accounts}} 个账户</text><text class="cloud-choice-amount">¥{{cloudLocal.amount}}</text></view>
+    <view class="cloud-choice rose-group"><text class="cloud-choice-label">云端账本{{cloudRemote ? ' · 第 ' + cloudRemote.revision + ' 版' : ''}}</text><text class="cloud-choice-meta">{{cloudRemote ? cloudRemote.entries + ' 笔账目 · ' + cloudRemote.accounts + ' 个账户' : '暂不可见，请先核对云环境'}}</text><text wx:if="{{cloudRemote}}" class="cloud-choice-amount">¥{{cloudRemote.amount}}</text></view>
+  </view>
+  <view wx:if="{{cloudError}}" class="form-error">{{cloudError}}</view>
+  <view class="cloud-actions">
+    <block wx:if="{{cloudPhase === 'conflict'}}"><button class="primary" disabled="{{cloudActionBusy}}" data-source="local" bindtap="resolveCloud">核对后使用本机账本</button><button wx:if="{{cloudRemote}}" class="secondary" disabled="{{cloudActionBusy}}" data-source="remote" bindtap="resolveCloud">核对后使用云端账本</button></block>
+    <button wx:elif="{{cloudConfigured}}" class="primary" disabled="{{cloudActionBusy || cloudPhase === 'syncing'}}" loading="{{cloudActionBusy || cloudPhase === 'syncing'}}" bindtap="syncCloud">{{cloudEnabled ? '立即同步' : '启用云同步'}}</button>
+    <button wx:if="{{cloudConfigured}}" class="secondary" disabled="{{cloudActionBusy}}" bindtap="openCloudHistory">查看云端历史版本</button>
+    <button class="secondary" bindtap="exportBackup">另存独立 JSON 备份</button>
+    <button wx:if="{{cloudEnabled}}" class="cloud-pause" disabled="{{cloudActionBusy || cloudPhase === 'syncing'}}" bindtap="pauseCloud">暂停自动同步</button>
+  </view>
+  <view class="hint">本机记账不依赖网络；只有显示“本机与云端一致”时，当前账本才已完成核对。云端保留最近 30 个同步版本，独立导出文件可另存到其他位置。</view>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'cloud-history'}}" title="云端历史备份" content-key="{{cloudHistoryLoading + ':' + cloudHistory.length + ':' + cloudError}}" bindclose="closeSheet">
+  <view class="hint">最近 30 个已完成的同步版本。恢复历史会生成一个新的当前版本，替换前的本机账本先留在恢复点。</view>
+  <view wx:if="{{cloudHistoryLoading}}" class="notice">正在读取历史版本…</view>
+  <button wx:for="{{cloudHistory}}" wx:key="snapshotId" class="recovery-row" disabled="{{cloudActionBusy}}" data-id="{{item.snapshotId}}" bindtap="chooseCloudVersion"><view><text>第 {{item.revision}} 版 · {{item.timeText}}</text><text>{{item.stats.entries}} 笔账目 · {{item.stats.accounts}} 个账户 · ¥{{item.amount}}</text></view><ui-icon name="chevron-right" size="{{18}}" /></button>
+  <view wx:if="{{!cloudHistoryLoading && !cloudHistory.length && !cloudError}}" class="notice">尚无云端历史。首次同步完成后，会在这里保留版本。</view>
+  <view wx:if="{{cloudError}}" class="form-error">{{cloudError}}</view>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'cloud-restore'}}" title="核对云端历史" content-key="{{cloudError}}" bindclose="closeSheet">
+  <view class="surface surface-olive restore-card"><text class="restore-kind">第 {{cloudRestore.revision}} 版</text><text class="restore-summary">{{cloudRestore.timeText}}<br />{{cloudRestore.stats.entries}} 笔账目 · {{cloudRestore.stats.accounts}} 个账户 · {{cloudRestore.stats.categories}} 个分类</text><view><text>账户总额</text><text class="restore-amount">¥{{cloudRestore.amount}}</text></view></view>
+  <view class="notice">先保存当前本机恢复点，再读取此版本。恢复后会建立新的云端版本；同步未完成时会明确提示。</view>
+  <view wx:if="{{cloudError}}" class="form-error">{{cloudError}}</view>
+  <button class="primary" disabled="{{cloudActionBusy}}" loading="{{cloudActionBusy}}" bindtap="confirmCloudRestore">备份当前账本并恢复</button>
+</bottom-sheet>
+<bottom-sheet open="{{sheet === 'appearance'}}" title="珍珠玻璃" bindclose="closeSheet"><view class="appearance-pair"><image src="/assets/olive-card.jpg" mode="aspectFill" /><image src="/assets/rose-card.jpg" mode="aspectFill" /></view><view class="notice">橄榄绿与暖粉财务卡片，搭配银白悬浮导航。当前已应用到所有页面。</view><button class="primary" bindtap="closeSheet">正在使用</button></bottom-sheet>

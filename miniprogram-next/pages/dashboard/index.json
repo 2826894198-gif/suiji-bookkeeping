@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "ec-canvas": "/components/ec-canvas/ec-canvas",
+    "ui-icon": "/components/icon/index",
+    "top-bar": "/components/top-bar/index",
+    "ledger-rows": "/components/ledger-rows/index",
+    "bottom-sheet": "/components/bottom-sheet/index"
+  }
+}

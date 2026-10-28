@@ -1,0 +1,4 @@
+{
+  "collection": "pearl_cloud_v1",
+  "rules": { "read": false, "write": false }
+}

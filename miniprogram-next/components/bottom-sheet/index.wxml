@@ -1,0 +1,8 @@
+<view wx:if="{{open}}" class="sheet-mask" aria-modal="true" aria-role="dialog" aria-label="{{title}}">
+  <view class="sheet-backdrop" bindtap="close" catchtouchmove="stop" aria-hidden="true" />
+  <view class="sheet-body {{fixedFooter ? 'sheet-with-footer' : ''}}" catchtap="stop" style="padding-bottom:{{bottomInset + 18}}px">
+    <view class="sheet-head" catchtouchmove="stop"><text class="sheet-title">{{title}}</text><button class="tap-icon" bindtap="close" aria-label="关闭"><ui-icon name="x" size="{{22}}" /></button></view>
+    <scroll-view scroll-y class="sheet-scroll" style="height:{{scrollHeight}}"><view class="sheet-content"><slot /></view></scroll-view>
+    <view wx:if="{{fixedFooter}}" class="sheet-footer"><slot name="footer" /></view>
+  </view>
+</view>

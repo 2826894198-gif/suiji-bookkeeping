@@ -1,0 +1,24 @@
+<view class="page sage-page"><top-bar title="分类管理" back /><view class="content">
+  <view class="categories-intro"><text class="categories-title">常用的，放在顺手处。</text><text class="categories-description">清楚归类，记下一笔就更轻松。</text></view>
+  <view class="category-tabs"><button class="{{type === 'expense' ? 'active' : ''}}" data-type="expense" bindtap="setType">支出分类</button><button class="{{type === 'income' ? 'active' : ''}}" data-type="income" bindtap="setType">收入分类</button></view>
+  <view class="category-list sg-surface"><button wx:for="{{rows}}" wx:key="id" class="category-row" data-id="{{item.id}}" bindtap="edit" aria-label="编辑{{item.name}}分类"><view class="icon-circle"><ui-icon name="{{item.icon}}" size="{{23}}" color="#434c37" /></view><view class="category-copy"><view class="category-name"><text>{{item.name}}</text><text class="category-count">{{item.children.length}} 个子分类</text></view><text class="children-labels">{{item.childrenText || '仅使用主分类'}}</text></view><view class="edit-icon"><ui-icon name="pencil" color="#687064" size="{{17}}" /></view></button></view>
+  <button class="primary add-category" bindtap="create"><ui-icon name="plus" color="#ffffff" size="{{20}}" />添加分类</button>
+  <view class="hint">分类改名后，历史账目保留归属。移除子分类选项不会删除已有流水。</view>
+</view></view>
+<bottom-sheet open="{{sheet === 'category'}}" title="{{form.id ? '编辑分类' : '添加分类'}}" fixed-footer content-key="{{childRows.length + ':' + undoLabel + ':' + formError}}" bindclose="closeSheet">
+  <view class="field"><text class="field-label">主分类名称</text><input aria-label="主分类名称" class="field-input category-name-input" placeholder="例如：学习" value="{{form.name}}" data-field="name" bindinput="formInput" bindblur="inputBlur" maxlength="12" /></view>
+  <view class="field"><text class="field-label">选择图标</text><view class="icon-options"><button wx:for="{{iconOptions}}" wx:key="*this" class="{{form.icon === item ? 'selected' : ''}}" data-icon="{{item}}" bindtap="iconSelect" aria-label="选择{{item}}图标"><ui-icon name="{{item}}" size="{{23}}" color="{{form.icon === item ? '#ffffff' : '#58654a'}}" /></button></view></view>
+  <view class="children-heading"><text>子分类</text><text class="muted small">{{childRows.length}} 个</text></view>
+  <view class="child-tools-sticky"><view wx:if="{{deletedChildren.length}}" class="undo-strip" aria-live="polite"><text>已移除“{{undoLabel}}”</text><button bindtap="undoRemoveChild">撤销{{deletedChildren.length > 1 ? '（' + deletedChildren.length + '）' : ''}}</button></view><view class="reorder-tools"><text>长按手柄拖动，或选中后上下移动</text><view class="move-buttons"><button bindtap="moveChild" data-step="-1" disabled="{{!canMoveUp || !!draggingKey}}" aria-label="上移选中的子分类"><ui-icon name="chevron-up" size="{{13}}" color="#4f5e2d" />上移</button><button bindtap="moveChild" data-step="1" disabled="{{!canMoveDown || !!draggingKey}}" aria-label="下移选中的子分类"><ui-icon name="chevron-down" size="{{13}}" color="#4f5e2d" />下移</button></view></view></view>
+  <view class="child-editor-list">
+    <view wx:for="{{childRows}}" wx:key="key" class="child-editor-row {{selectedChild === index ? 'selected' : ''}} {{draggingKey === item.key ? 'dragging' : ''}}" style="transform:translateY({{draggingKey === item.key ? dragOffset : 0}}px)">
+      <button class="child-grip" data-key="{{item.key}}" bindtap="selectChild" bindlongpress="startChildDrag" catchtouchmove="moveChildDrag" bindtouchend="endChildDrag" bindtouchcancel="endChildDrag" aria-label="选中{{item.name}}进行排序，长按可拖动"><view class="grip-dots"><view></view><view></view><view></view><view></view><view></view><view></view></view></button>
+      <input class="child-name-input" value="{{item.name}}" data-key="{{item.key}}" bindfocus="selectChild" bindinput="childInput" bindblur="inputBlur" aria-label="第{{index + 1}}个子分类名称" maxlength="120" />
+      <button class="remove-child" data-key="{{item.key}}" bindtap="removeChild" aria-label="删除{{item.name}}，可撤销"><ui-icon name="x" size="{{17}}" color="#a4483c" /></button>
+    </view>
+    <view wx:if="{{!childRows.length}}" class="children-empty">还没有子分类，也可以直接使用主分类。</view>
+  </view>
+  <view class="add-child-row"><input value="{{newChild}}" bindinput="newChildInput" bindconfirm="addChild" confirm-type="done" placeholder="新增一个子分类…" aria-label="新子分类名称" maxlength="120" /><button bindtap="addChild" aria-label="添加子分类"><ui-icon name="plus" size="{{20}}" color="#4f5e2d" /></button></view>
+  <view class="editor-hint">新增、排序和删除后自动保存。删除只移出记账选项，已有流水保留原名称。</view>
+  <view slot="footer" class="category-save-footer"><text class="save-status {{saveState}}" aria-live="polite">{{saveStatus}}</text><view wx:if="{{formError}}" class="form-error">{{formError}}</view><button class="primary save-category" bindtap="save" disabled="{{busy}}" loading="{{busy}}">{{saveState === 'error' ? '重试并完成' : '完成'}}</button></view>
+</bottom-sheet>

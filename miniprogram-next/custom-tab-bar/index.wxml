@@ -1,0 +1,15 @@
+<view wx:if="{{!keyboardOpen && !sheetOpen}}" class="dock-wrap" style="bottom:{{bottomInset + 12}}px">
+  <view class="dock-surface" aria-hidden="true">
+    <view class="dock-track"><view class="dock-selection {{selected === 2 ? 'selection-hidden' : ''}}" style="transform:translateX(calc({{selected * 100}}% + {{selected * 4}}px))" /></view>
+  </view>
+  <view class="dock">
+    <button wx:for="{{tabs}}" wx:key="path" data-index="{{index}}" bindtap="switchTab"
+      aria-label="{{item.name}}" aria-selected="{{selected === index}}"
+      class="tab {{selected === index ? 'selected' : ''}} {{index === 2 ? 'add-tab' : ''}}">
+      <view class="tab-icon {{index === 2 ? 'add-disc' : ''}}">
+        <ui-icon name="{{item.icon}}" size="{{index === 2 ? 27 : 24}}" color="{{index === 2 ? '#ffffff' : selected === index ? '#151715' : '#6f7273'}}" />
+      </view>
+      <text class="tab-label">{{item.name}}</text>
+    </button>
+  </view>
+</view>

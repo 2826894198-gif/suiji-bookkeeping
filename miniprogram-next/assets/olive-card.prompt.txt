@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: production raster background texture for an editable financial UI card.
+Reference image: the attached personal bookkeeping homepage is a MATERIAL AND COLOR REFERENCE ONLY. Extract the look of the LEFT OLIVE-GREEN budget card, not the homepage, text or UI.
+Primary request: Generate a square 1024 x 1024 full-bleed olive-to-lime translucent frosted glass texture matching that left card as closely as possible. Deep dark olive upper-left and left-middle, muted moss and olive center, soft vivid yellow-lime glow in the lower-right and bottom edge. Very fine organic frost grain with subtle blurred smoky swirls, natural uneven colored light diffusing through thick glass. The overall top half remains dark enough for white UI text. Tiny soft variations in the surface are appropriate, no photographic scenery.
+Composition: texture must fill every pixel edge to edge in a perfectly flat front view. NO rounded corners, border frame, external shadows, white margins, card perspective, or surrounding background; the application will crop the square to rounded corners.
+At y=70%-81% only, include a restrained miniature dot-matrix motif resembling the reference: around 22 narrow columns of very small softly glowing dots with varying heights of 2 to 5 dots, spanning x=9%-91%, faint translucent white/gray on the left, two brighter lime columns near x=61%, lime dots toward the right. This is subtle fine decorative texture, not a bold chart.
+Absolutely no text, Chinese characters, letters, numbers, monetary amounts, labels, icons, buttons, ring, wallet symbol, arrow, watermark, logo, graphs other than the tiny specified dot motif, UI screens, device, or interface mockup.
+Create only this one clean usable material asset.

@@ -1,0 +1,7 @@
+.top { max-width:760px;margin:0 auto;box-sizing:border-box; }
+.bar { height:38px;display:flex;align-items:center;padding:0 18px;gap:6px; }
+.title,.back { padding:0;margin:0;border:0;background:none;line-height:1.4; }
+.title::after,.back::after { border:0; }
+.title { text-align:left;font-size:18px;font-weight:500;letter-spacing:-.3px;color:#111510;min-height:38px;display:flex;align-items:center;max-width:calc(100% - 112px); }
+.back { width:32px;height:44px;display:flex;align-items:center;justify-content:flex-start; }
+@media(min-width:600px) { .bar { padding:0 28px; } }
